@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo
+spec:
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      apps: jio
+  template:
+    metadata:
+      labels:
+        apps: jio
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "demo"
+            - name: MYSQL_PASSWORD
+              value: "admin"
+            - name: MYSQL_USER
+              value: "fry"
+          volumeMounts:
+            - name: demo-vol
+              mountPath: /home/ubuntu/mss
+        - name: phpmyadmin
+          image: phpmyadmin:latest
+          env:
+            - name: PMA_HOST
+              value: "mysql"
+            - name: PMA_ARBITRARY
+              value: "1"
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: demo-vol
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demosvc
+spec:
+  type: NodePort
+  selector:
+    apps: jio
+  ports:
+    - targetPort: 80
+      nodePort: 31308
+      port: 80

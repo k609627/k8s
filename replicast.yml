@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: demoo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jio
+  template:
+    metadata:
+      labels:
+        app: jio
+    spec:
+      containers:
+        - name: monika
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: newwsvc
+spec:
+  type: NodePort
+  selector:
+    app: jio
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 32167
+

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-phpmyadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-phpmyadmin
+  template:
+    metadata:
+      labels:
+        app: mysql-phpmyadmin
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: demo
+            - name: MYSQL_USER
+              value: admin
+            - name: MYSQL_PASSWORD
+              value: toot
+
+          ports:
+            - containerPort: 3306
+        - name: phpmyadmin
+          image: phpmyadmin/phpmyadmin:latest
+          env:
+            - name: PMA_HOST
+              value: mysql
+            - name: PMA_PORT
+              value: "3306"
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-phpmyadmin-service
+spec:
+  type: NodePort
+  selector:
+    app: mysql-phpmyadmin
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 31307
+

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demogreen
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      apps: jiio
+  template:
+    metadata:
+      labels:
+        apps: jiio
+    spec:
+      containers:
+        - name: demogrn
+          image: nginx:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: newsvc
+spec:
+  type: NodePort
+  selector:
+    apps: jiio
+  ports:
+    - targetPort: 80
+      port: 8081
+      nodePort: 31128

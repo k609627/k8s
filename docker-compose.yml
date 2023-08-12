@@ -1,0 +1,25 @@
+version: '2.1'
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_EMPTY_ROOT_PASSWORD: 'True'
+      MYSQL_PASSWORD: demo
+      MYSQL_USER: demo090
+    volumes:
+      - /home/ubuntu/mysqll:/var/lib/mysql
+    networks:
+      - demonet
+  phpadmin:
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: 'mysql'
+      PMA_ARBITRARY: '1'
+    ports:
+      - 8080:80
+    networks:
+      - demonet
+networks:
+  demonet:
+
